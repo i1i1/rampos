@@ -1,0 +1,23 @@
+[package]
+name = "llpc_os"
+version = "0.1.0"
+authors = ["i1i1 <vanyarybin1@live.ru>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+bitflags = "1.2"
+bootloader = { version = "0.8.0", features = ["map_physical_memory"]}
+cpuio = "0.2.0"
+spin = "0.5.2"
+
+[dependencies.lazy_static]
+version = "1.0"
+features = ["spin_no_std"]
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
