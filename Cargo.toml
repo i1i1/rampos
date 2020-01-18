@@ -4,6 +4,15 @@ version = "0.1.0"
 authors = ["i1i1 <vanyarybin1@live.ru>"]
 edition = "2018"
 
+[package.metadata.bootimage]
+test-args = [
+    "-device", "isa-debug-exit,iobase=0xf4,iosize=0x04",
+    "-serial", "stdio",
+    "-display", "none"
+]
+test-success-exit-code = 33
+test-timeout = 300 # 5 minutes
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]

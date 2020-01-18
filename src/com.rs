@@ -10,7 +10,7 @@ pub struct COM {
 impl Write for COM {
     fn write_str(&mut self, s: &str) -> Result<(), Error> {
         for byte in s.bytes() {
-            self.write_byte(byte) 
+            self.write_byte(byte)
         }
         Ok(())
     }
@@ -75,19 +75,18 @@ impl COM {
 }
 
 lazy_static! {
-    pub static ref COM1: Mutex<COM> =
-        Mutex::new(unsafe { COM::new(0x3f8) });
+    pub static ref COM1: Mutex<COM> = Mutex::new(unsafe { COM::new(0x3f8) });
 }
 
 #[macro_export]
-macro_rules! print {
+macro_rules! com_print {
     ($($arg:tt)*) => ($crate::com::_print(format_args!($($arg)*)));
 }
 
 #[macro_export]
-macro_rules! println {
+macro_rules! com_println {
     () => ($crate::print!("\n"));
-    ($($arg:tt)*) => ($crate::print!("{}\n", format_args!($($arg)*)));
+    ($($arg:tt)*) => ($crate::com_print!("{}\n", format_args!($($arg)*)));
 }
 
 #[doc(hidden)]

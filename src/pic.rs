@@ -48,15 +48,15 @@ impl Pic {
         io_wait();
 
         // ICW 3. Connect slave with master.
-        self.master_dt.write(0x4);	// 0x4 -- IRQ2 pin
-        self.slave_dt.write(0x4);	// 0x4 -- IRQ2 pin address
+        self.master_dt.write(0x4); // 0x4 -- IRQ2 pin
+        self.slave_dt.write(0x4); // 0x4 -- IRQ2 pin address
         io_wait();
 
         // ICW4. final steps
-        self.master_dt.write(0x1);	// Enable PIC for 80x86 mode
-	    io_wait();
+        self.master_dt.write(0x1); // Enable PIC for 80x86 mode
+        io_wait();
 
-	    self.set_imr(imr);
+        self.set_imr(imr);
     }
 }
 
