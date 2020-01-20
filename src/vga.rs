@@ -1,6 +1,8 @@
-use core::fmt::{Arguments, Error, Write};
-use lazy_static::lazy_static;
-use spin::Mutex;
+use {
+    core::fmt::{Arguments, Error, Write},
+    lazy_static::lazy_static,
+    spin::Mutex,
+};
 
 #[allow(dead_code)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -57,6 +59,16 @@ impl Write for VGAWriter {
     fn write_str(&mut self, s: &str) -> Result<(), Error> {
         for byte in s.bytes() {
             match byte {
+                b'\t' => {
+                    let tabs = 8;
+                    let old_column = self.column;
+                    let new_column = (old_column / tabs + 1) * tabs;
+                    let diff = new_column - old_column;
+
+                    for _ in 0..diff {
+                        self.write_byte(b' ')
+                    }
+                }
                 // printable ASCII byte or newline
                 0x20..=0x7e | b'\n' => self.write_byte(byte),
                 _ => self.write_byte(0xfe),
@@ -133,11 +145,29 @@ macro_rules! vga_print {
 
 #[macro_export]
 macro_rules! vga_println {
-    () => ($crate::print!("\n"));
+    () => ($crate::vga_print!("\n"));
     ($($arg:tt)*) => ($crate::vga_print!("{}\n", format_args!($($arg)*)));
 }
 
 #[doc(hidden)]
 pub fn _print(args: Arguments) {
     VGAWRITER.lock().write_fmt(args).unwrap();
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use test_macros::kernel_test;
+
+    #[kernel_test]
+    fn test_vga_simple() {
+        vga_println!("test_vga_simple output");
+    }
+
+    #[kernel_test]
+    fn test_println_many() {
+        for _ in 0..200 {
+            vga_println!("test_println_many output");
+        }
+    }
 }

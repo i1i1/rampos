@@ -1,7 +1,4 @@
-use bitflags::*;
-use cpuio::*;
-use lazy_static::lazy_static;
-use spin::Mutex;
+use {bitflags::*, cpuio::*, lazy_static::lazy_static, spin::Mutex};
 
 bitflags! {
     pub struct IRQMask: u16 {
@@ -61,12 +58,14 @@ impl Pic {
 }
 
 lazy_static! {
-    static ref PIC: Mutex<Pic> = Mutex::new(Pic {
-        master_cmd: unsafe { Port::new(0x20) },
-        master_dt: unsafe { Port::new(0x21) },
-        slave_cmd: unsafe { Port::new(0xA0) },
-        slave_dt: unsafe { Port::new(0xA1) },
-        imr: IRQMask::empty(),
+    static ref PIC: Mutex<Pic> = Mutex::new(unsafe {
+        Pic {
+            master_cmd: Port::new(0x20),
+            master_dt: Port::new(0x21),
+            slave_cmd: Port::new(0xA0),
+            slave_dt: Port::new(0xA1),
+            imr: IRQMask::empty(),
+        }
     });
 }
 

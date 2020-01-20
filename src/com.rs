@@ -1,7 +1,9 @@
-use core::fmt::{Arguments, Error, Write};
-use cpuio::*;
-use lazy_static::lazy_static;
-use spin::Mutex;
+use {
+    core::fmt::{Arguments, Error, Write},
+    cpuio::*,
+    lazy_static::lazy_static,
+    spin::Mutex,
+};
 
 pub struct COM {
     ports: [Port<u8>; 6],
@@ -85,7 +87,7 @@ macro_rules! com_print {
 
 #[macro_export]
 macro_rules! com_println {
-    () => ($crate::print!("\n"));
+    () => ($crate::com_print!("\n"));
     ($($arg:tt)*) => ($crate::com_print!("{}\n", format_args!($($arg)*)));
 }
 
