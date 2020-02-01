@@ -1,4 +1,7 @@
-use {bitflags::*, cpuio::*, lazy_static::lazy_static, spin::Mutex};
+use bitflags::*;
+use cpuio::*;
+use lazy_static::lazy_static;
+use spin::Mutex;
 
 bitflags! {
     pub struct IRQMask: u16 {
@@ -21,7 +24,7 @@ struct Pic {
 }
 
 impl Pic {
-    fn set_imr(&mut self, imr: IRQMask) {
+    fn set_interrupts(&mut self, imr: IRQMask) {
         let master_imr = imr.bits() as u8;
         let slave_imr = (imr.bits() >> 8) as u8;
 
@@ -53,7 +56,7 @@ impl Pic {
         self.master_dt.write(0x1); // Enable PIC for 80x86 mode
         io_wait();
 
-        self.set_imr(imr);
+        self.set_interrupts(imr);
     }
 }
 

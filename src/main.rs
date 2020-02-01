@@ -1,10 +1,11 @@
-#![feature(abi_x86_interrupt)]
+#![feature(abi_x86_interrupt, asm)]
 #![no_main]
 #![no_std]
 
-mod com;
-mod pic;
-mod vga;
+pub mod com;
+pub mod interrupt;
+pub mod pic;
+pub mod vga;
 use {
     bootloader::{bootinfo::*, BootInfo},
     core::panic::PanicInfo,
@@ -26,6 +27,7 @@ pub extern "C" fn _start(boot_info: &'static BootInfo) -> ! {
     }
 
     pic::init_interrupts(pic::IRQMask::empty());
-    vga_println!("Pic inited!");
+    interrupt::init();
+    vga_println!("Interrupts and pic inited!");
     loop {}
 }
